@@ -1,21 +1,28 @@
 ! function () {
+    //封装  
+    /**
+     * @description: 
+     * @param {type} String element string 
+     * @return: element
+     */
+    function createAndappendElement(ele, fatherBox, className) {
+        let element = document.createElement(ele)
+        element.className = className;
+        fatherBox.append(element);
+        return element;
+    }
+
+
     //code显示在可见页面
-    let viewpre = document.createElement('pre')
-    viewpre.className = 'viewPre';
-    document.body.append(viewpre);
+    let viewpre = createAndappendElement('pre', document.body, 'viewPre')
 
     //code写入样式里面
-    let style = document.createElement('style')
-    style.className = 'styleCode'
-    document.head.append(style)
+    let style = createAndappendElement('style', document.head, 'styleCode')
 
     //一张白纸
-    let div = document.createElement('div')
-    div.className = 'div1'
-    document.body.append(div)
-    let peper = document.createElement('pre')
-    peper.className = 'peper'
-    div.append(peper)
+    let div = createAndappendElement('div', document.body, 'markdown-body')
+    let fatherDiv = document.querySelector('.markdown-body')
+    let peper = createAndappendElement('pre', fatherDiv, 'peper')
 
     // 动态简历开始
     let result = `
@@ -55,101 +62,120 @@
       .viewPre {
           position:fixed;
           left:0;
-          width:49%;
+          width:50%;
           height:100%;
+          margin:16px;
       }
 
-      .div1 {
+      .markdown-body {
+          height:100%;
           background-color: #444;
           position:fixed;
           right:0;
-          width:49%;
-          height:100%;
+          width:50%;
           font-size:16px;
           padding:16px;
       }
 
       .peper {
-          padding:16px;
           width:100%;
           height:100%;
+          display: block;
+          padding:16px;
           background:white;
           overflow: auto;
+
       }
       /* 于是我就可以在白纸上写字了，请看右边 */
-      
-
-
     `
     let resume = `
-    # 自我介绍
-    我叫 XXX
-    1990 年 1 月出生
-    XXX 学校毕业
-    自学前端半年
-    希望应聘前端开发岗位
-    # 技能介绍
-    熟悉 JavaScript CSS
-    # 项目介绍
-    1. XXX 轮播
-    2. XXX 简历
-    3. XXX 画板
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    # 联系方式
-    - QQ xxxxxxxx
-    - Email xxxxxxxx
-    - 手机 xxxxxxx
-    
-    /*
-     * 这就是我的会动的简历
-     * 谢谢观看
-     */
+# 自我介绍
+我叫 XXX
+1990 年 1 月出生
+XXX 学校毕业
+自学前端半年
+希望应聘前端开发岗位
 
-    `
-    let n = 0;
-    let id = setInterval(function () {
-        n += 1
-        let code = result.substring(0, n)
-        var html = Prism.highlight(code, Prism.languages.css);
-        viewpre.innerHTML = html;
-        style.innerHTML = code;
-        viewpre.scrollTop = viewpre.scrollHeight;
-        if (n >= result.length) {
-            window.clearInterval(id)
-            //开始写字
-            writeResume();
-        }
+# 技能介绍
 
-        // Returns a highlighted HTML string
+熟悉 JavaScript CSS
 
-    }, 10)
+# 项目介绍
+
+1. XXX 轮播
+2. XXX 简历
+3. XXX 画板
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+
+# 联系方式
+
+- QQ xxxxxxxx
+- Email xxxxxxxx
+- 手机 xxxxxxx
+`
+    writeCss();//执行
+    function writeCss() {
+        let n = 0;
+        let id = setInterval(function () {
+            n += 1
+            let code = result.substring(0, n)
+            var html = Prism.highlight(code, Prism.languages.css);
+            viewpre.innerHTML = html;
+            style.innerHTML = code;
+            viewpre.scrollTop = viewpre.scrollHeight;
+            if (n >= result.length) {
+                window.clearInterval(id)
+                //开始写字
+                writeResume();
+            }
+
+            // Returns a highlighted HTML string
+
+        }, 10)
+    }
+
+
 
     function writeResume() {
         let n = 0;
@@ -169,19 +195,8 @@
     }
 
     function markdownTransHtml(e) {
-        console.log(e.trim().split('\n'))
-        let a = e.trim().split('\n').map((item) => {
-            return marked(item)
-        })
-        console.log(a)
-        // let code = a.map((item)=>{
-        //     return item
-        // })
-        // let code = marked('e');
-        // peper.innerHTML = code;
-        // let code = marked(resume)
-        // console.log(code)
-        // peper.innerHTML = code;
+        console.log(e)
+        peper.innerHTML = marked(resume);
 
     }
 
